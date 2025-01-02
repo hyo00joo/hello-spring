@@ -36,6 +36,12 @@ public class MemoryMemberRepository implements MemberRepository {
 
     }
 
+    @Override
+    public int delete(Long id, String name) {
+        store.entrySet().removeIf(entry ->
+                entry.getKey().equals(id) && entry.getValue().getName().equals(name));
+        return store.size();
+    }
     public static void clearstore() {
         store.clear();
     }
