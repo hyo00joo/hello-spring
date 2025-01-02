@@ -13,8 +13,18 @@ public class Member {
 
 
     //db에 있는 column name이 username으로 mapping됨
-    @Column(name = "username")
+    @Column(name ="name")
     private String name;
+
+//    private String gender;
+//
+//    public String getGender() {
+//        return gender;
+//    }
+//
+//    public void setGender(String gender) {
+//        this.gender = gender;
+//    }
 
     public long getId() {
         return id;
@@ -31,4 +41,6 @@ public class Member {
     public void setName(String name) {
         this.name = name;
     }
+
+    public void delete() { }
 }
