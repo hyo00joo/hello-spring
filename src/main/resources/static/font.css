@@ -1,0 +1,8 @@
+@font-face {
+    font-family: '배달의민족 주아'; /* 사용자 정의 글꼴 이름 */
+    src: url('BMJUA_otf.otf') format('opentype'); /* 경로와 포맷 */
+}
+
+* {
+    font-family: '배달의민족 주아', Arial, sans-serif; /* 기본 글꼴 설정 */
+}

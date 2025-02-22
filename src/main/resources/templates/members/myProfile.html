@@ -1,0 +1,268 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" href="/font.css">
+
+</head>
+<style>
+
+    :root, html, body {
+
+        margin: 0;
+        padding: 0;
+    }
+
+    :root {
+        font-size: 230% !important;
+
+    }
+
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 3rem 0;
+
+    }
+
+    #box {
+        width: 17rem;
+        position: relative;
+        padding:  3rem 1.5rem 1.5rem 1.5rem;
+        border-radius: 0.875rem;
+        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+        border: 0.063rem solid #e03f3f96;
+        background-color: #f1d1f20f;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+
+    }
+
+    #image-area {
+
+    }
+
+
+    .back {
+        height: 1rem;
+        width: 4.875rem;
+        position: absolute; /* 위치를 조정 */
+        left: 0%; /* `form`의 왼쪽 정렬 */
+        top: 0%; /* 수직 중앙 */
+        padding: 1rem;
+        margin: 0;
+        color: pink;
+        text-decoration: none;
+        text-align: left;
+        justify-content: left;
+        font-size: 0.813rem;
+        transition: color 0.5s, font-size 0.5s;
+    }
+
+
+    .back:hover {
+        color: #e45166;
+        font-size: 0.844rem;
+    }
+
+    #displayImage > img {
+        height: 4rem;
+        width: 4rem;
+        border-radius : 50%;
+        /*object-fit: cover*/
+
+    }
+
+    #profileImage {
+        display: none;
+    }
+
+
+    button, .uploadButton {
+        width: 4rem;
+        background-color: rgba(255, 0, 0, 0.4);
+        text-align: center;
+        color: white;
+        border: none;
+        border-radius: 0.25rem;
+        padding: 0.2rem 0.2rem;
+        transition: background-color 0.5s;
+        font-size: 0.6rem;
+    }
+
+
+    button:hover, .uploadButton:hover, #save.visible:hover {
+        background-color: #e45166;
+        cursor: pointer;
+    }
+
+    .custom-alert {
+        width: 100%;
+        height: 150%;
+        z-index: 9999;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        pointer-events: none;
+        position: fixed;
+        opacity: 0;
+        transition: opacity 0.2s ease-in-out;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .custom-alert.visible {
+        opacity: 1;
+        pointer-events: all;
+    }
+
+    .alert-box {
+        padding: 1.5rem;
+        background: white;
+        text-align: center;
+        border-radius: 1.2rem;
+    }
+
+    #save {
+        display: none;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+
+    #save.visible {
+        display: revert;
+        background-color: rgba(255, 0, 0, 0.4);
+        pointer-events: all;
+        opacity: 1;
+        animation: glow 0.6s infinite alternate;
+    }
+
+    @keyframes glow {
+        0% {
+            box-shadow: 0 0 0.1rem rgba(255, 0, 0, 0.4);
+        }
+        100% {
+            box-shadow: 0 0 0.7rem rgba(255, 0, 0, 0.4);
+        }
+    }
+
+    #editImage.invisible {
+        display: none;
+    }
+
+
+</style>
+<body>
+<div id="save-alert" class="custom-alert">
+    <div class="alert-box">
+        <p>프로필 사진 변경중...</p>
+    </div>
+</div>
+<div id="edit-alert" class="custom-alert">
+    <div class="alert-box">
+       <span>
+           <button id="delete" th:if="${delete}">삭제하기</button>
+           <label for="profileImage" class="uploadButton">프로필 사진 변경</label>
+           <input type="file" name="profileImage" id="profileImage" onchange="displayImage()"/>
+       </span>
+    </div>
+</div>
+<div id="box">
+    <a class="back" href="http://localhost:8080/members/home"><< 돌아가기</a>
+<div id="image-area">
+    <div id="displayImage">
+        <img id="currentImage" th:src="${image}" alt="">
+    </div>
+    <button id="editImage">프로필사진 수정</button>
+    <button id="save">저장하기</button>
+</div>
+</div>
+
+
+</body>
+
+<script>
+
+
+    async function displayImage() {
+
+        document.getElementById("edit-alert").classList.remove("visible")
+        document.getElementById("editImage").classList.add("invisible")
+        const imageContainer = document.getElementById("displayImage")
+        const imageFile = document.getElementById("profileImage").files
+
+        const reader = new FileReader();
+
+        reader.readAsDataURL(imageFile[0]);
+        // 파일이 로드된 후 실행될 함수
+        reader.onload = function (e) {
+            const imgElement = document.createElement('img');
+            imgElement.src = e.target.result; // base64로 변환된 이미지 데이터
+
+            // 이미지 요소를 fileNamesContainer에 추가
+            imageContainer.appendChild(imgElement);
+            imageContainer.removeChild(document.getElementById("currentImage"))
+        };
+
+        const afterImage = document.getElementById("profileImage").files
+
+        if (afterImage !== null) {
+            document.getElementById("save").classList.add("visible")
+        }
+
+
+    }
+
+
+    async function saveProfileImage() {
+
+        document.getElementById("save-alert").classList.add("visible")
+
+
+        const file = document.getElementById("profileImage").files[0]
+        let formData = new FormData()
+
+        formData.append('file', file)
+
+        const response = await fetch("http://localhost:8080/api/s3/upload", {
+            method: "POST",
+            body: formData
+        })
+
+        if (response.ok) {
+            window.location.href = "http://localhost:8080/members/myProfile"
+            // console.log("Uploaded File URL:", await response.url());
+            //
+            // // 파일 URL을 이미지로 표시
+            // document.getElementById("currentImage").src = await response.text();
+
+        } else {
+
+            window.location.href = "http://localhost:8080"
+        }
+
+        document.getElementById("save-alert").classList.remove("visible")
+    }
+
+    document.getElementById("editImage").addEventListener("click", ()=> {
+        document.getElementById("edit-alert").classList.add("visible")
+    })
+
+
+    document.getElementById("save").addEventListener("click", () => {
+
+
+
+            saveProfileImage()
+
+    })
+
+    // document.getElementById("confirm").addEventListener("click", () => {
+    //     document.getElementById("confirm").classList.remove("visible")
+    // })
+
+</script>
+
+</html>

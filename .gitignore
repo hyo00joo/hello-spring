@@ -17,6 +17,9 @@ bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
 
+## project setting file ##
+application-private.properties
+
 ### IntelliJ IDEA ###
 .idea
 *.iws
@@ -32,6 +35,8 @@ out/
 /dist/
 /nbdist/
 /.nb-gradle/
+
+Hyoeun EC2.pem
 
 ### VS Code ###
 .vscode/
