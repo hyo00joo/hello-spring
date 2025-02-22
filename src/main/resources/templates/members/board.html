@@ -1,0 +1,226 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" href="/font.css">
+</head>
+<style>
+
+    :root, html, body {
+
+        margin: 0;
+        padding: 0;
+    }
+
+    :root {
+        font-size: 190% !important;
+
+    }
+
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 5rem 0;
+
+    }
+
+    #box {
+        position: relative;
+        padding: 1rem 2rem;
+        border-radius: 0.875rem;
+        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+        border: 0.063rem solid #e03f3f96;
+        background-color: #f1d1f20f;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .back {
+        height: 1rem;
+        width: 4.875rem;
+        position: absolute;    /* 위치를 조정 */
+        left: 0%;               /* `form`의 왼쪽 정렬 */
+        top: 0%;              /* 수직 중앙 */
+        padding-top: 0.7rem;
+        padding-left: 0.7rem;
+        margin: 0;
+        color: pink;
+        text-decoration: none;
+        text-align: left;
+        justify-content: left;
+        font-size: 0.813rem;
+        transition: color 0.5s, font-size 0.5s;
+    }
+
+
+    .back:hover {
+        color: #e45166;
+        font-size: 0.844rem;
+    }
+
+    table {
+        box-shadow: 0 0 0.63rem 0 rgba(0, 0, 0, 0.1);
+        align-items: center;
+        border-collapse: collapse;
+        /*box-sizing: border-box;*/
+        outline :0.038rem  solid #a45959;
+        border-radius: 0.875rem;
+        overflow : clip;
+        margin-bottom: 1.875rem;
+        width: 20rem;
+
+    }
+    tbody {
+        border:#f2dddd ;
+    }
+    th, td {
+
+        outline: 0.031rem solid #a45959;
+        padding: 0.5rem;
+        text-align: center;
+
+    }
+    th {
+        border-collapse: collapse;
+        background-color: #f2dddd;
+        color : #904242;
+
+    }
+
+    td {
+        color : #975555;
+    }
+
+    h2 {
+        color : #da6f6f;
+    }
+
+    .title, .name {
+        color :#975555;
+        text-decoration: none;
+        transition-duration: 0.5s;
+    }
+
+    .title:hover, .name:hover {
+        color : #610513;
+    }
+    .date {
+        font-size: 0.7rem;
+    }
+
+    .findPost {
+        display: flex;
+    }
+    #targetTitle{
+        font-size: 0.5rem;
+        padding: 0.5rem;
+        border-radius: 0.25rem 0 0 0.25rem ;
+        border: 0.063rem solid #c98383aa;
+        color : #904242;
+        display: flex;
+        transition-duration: 0.5s;
+
+    }
+    #targetTitle:hover {
+        border: 0.063rem solid #f82a49;
+    }
+    #targetTitle:focus {
+        border: 0.063rem solid #f82a49;
+        outline: none;
+    }
+    #targetTitle::placeholder {
+        color: #ec8282b4;
+        font-size: 0.5rem;
+    }
+
+    #find {
+
+        background-color: #c98383aa;
+        padding: 0.5rem;
+        border-radius:  0 0.25rem 0.25rem 0;
+        border: none;
+        color: white;
+        display: flex;
+        transition-duration: 0.1s;
+
+    }
+    #find:hover {
+        background-color: rgba(207, 19, 19, 0.67);
+    }
+    .page {
+        color : #7d454d;
+        text-decoration: none;
+        transition-duration: 0.2s;
+    }
+    #num {
+        color: #7d454d;
+    }
+
+    .page:hover {
+        color :rgba(207, 19, 19, 0.67);
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    table {
+        animation: slideDown 0.3s ease-in-out;
+    }
+
+</style>
+
+
+
+<body>
+<div id="box">
+    <a class="back" href="http://localhost:8080/members/home"><< 돌아가기</a>
+    <h2>게시판</h2>
+    <label for="targetTitle"></label>
+    <form action="/members/searchBoard" method="get" class="findPost">
+        <input name="title" id="targetTitle" type="text" placeholder="검색하기" th:value="${targetTitle}">
+        <button type="submit" id="find">검색</button>
+    </form>
+    <table>
+        <thead>
+        <tr>
+            <th id="name">회원</th>
+            <th id="title">제목</th>
+            <th class="date">작성 일자</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="entry: ${allPosts}" >
+            <td >
+                <a class="name" th:href="@{/members/profile/{id}(id=${entry.post.author.id})}"
+                   th:text="${entry.post.author.name}"></a>
+            </td>
+            <td>
+                <a class="title" th:href="@{/members/board/postContent/{id}(id=${entry.post.postId})}"
+                   th:text="${entry.post.title}">
+                </a>
+            </td>
+            <td class="date" th:text="${entry.formattedDate}"></td>
+        </tr>
+        </tbody>
+    </table>
+<div>
+    <a class="page" th:if="${currentPage} > 0" th:with="currentPage = ${currentPage - 1}"
+       th:href="@{/members/searchBoard(title = ${targetTitle}, currentPage = ${currentPage})}" >이전</a>
+    <span id="num" th:text="${currentPage + 1} + '/' + ${totalPages}"></span>
+    <a class="page" th:if="${currentPage + 1 < totalPages}" th:with="currentPage=${currentPage + 1}"
+       th:href="@{/members/searchBoard(title = ${targetTitle}, currentPage = ${currentPage})}">다음</a>
+</div>
+</div>
+</body>
+</html>

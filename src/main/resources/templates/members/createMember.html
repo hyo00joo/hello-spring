@@ -1,0 +1,325 @@
+<!doctype html>
+<html>
+<head>
+    <style>
+        :root, html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+
+        }
+
+        :root {
+            font-size: 190% !important;
+
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+
+        .back {
+            height: 1rem;
+            width: 4.875rem;
+            position: absolute; /* 위치를 조정 */
+            left: 0%; /* `form`의 왼쪽 정렬 */
+            top: 0%; /* 수직 중앙 */
+            padding: 1rem;
+            margin: 0;
+            color: pink;
+            text-decoration: none;
+            text-align: left;
+            justify-content: left;
+            font-size: 0.813rem;
+            transition: color 0.5s, font-size 0.5s;
+        }
+
+
+        .back:hover {
+            color: #e45166;
+            font-size: 0.844rem;
+        }
+
+
+        #box {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            width: fit-content;
+            position: relative;
+            padding: 3rem 2rem 1.5rem 2rem;
+            border-radius: 0.875rem;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 0.625rem 0 rgba(0, 0, 0, 0.1);
+            border: 0.063rem solid #e03f3f96;
+            background-color: #f1d1f20f;
+        }
+
+        .input-label {
+            display: flex;
+            flex-direction: row;
+            gap: 1rem;
+            align-items: center;
+            /*color: #da6f6f;*/
+        }
+
+        .input-label > label {
+            display: inline-block;
+            font-size: 0.9rem;
+            width: 5rem;
+            text-align: right;
+            color: #e66f80;
+        }
+
+        .input-label input {
+            width: 100%;
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            border: 0.063rem solid #c98383aa;
+            color: #da6f6f;
+        }
+
+        .input-label input:hover {
+
+            border: 0.063rem solid #f82a49;
+        }
+
+        .input-label input:focus {
+            outline: none;
+            border: 0.063rem solid #f82a49;
+        }
+
+        .input-label input::placeholder {
+            color: #ec8282b4;
+            font-family: '배달의민족 주아', Arial, sans-serif;
+        }
+
+        button {
+            font-size: 0.6rem;
+        }
+
+        button {
+            background-color: #f82a498b;
+            color: white;
+            border: none;
+            border-radius: 0.25rem;
+            padding: 0.5rem 1rem;
+            transition: background-color 0.5s;
+        }
+
+        button:hover {
+            cursor: pointer;
+            background-color: #ca243e;
+        }
+
+        button:disabled {
+            cursor: default;
+            background: #e0c2c7;
+        }
+
+        .error-message {
+            height: 1rem;
+            color: red;
+            font-size: 0.8rem;
+            text-align: right;
+        }
+
+        #hyoeun {
+            font-size: 0.8rem;
+            color: #f82a49;
+            font-weight: bold;
+            position: absolute;
+            left: 50%;
+            top: 0;
+            display: block;
+            transition: all 0.1s;
+            opacity: 0;
+        }
+
+        #box:hover > #hyoeun {
+            opacity: 1;
+            transition: all 0.5s;
+            transform: translateY(-3.75rem);
+        }
+
+
+        #custom-alert {
+
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            display: flex;
+            z-index: 9999;
+            background: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+            opacity: 0; /* 초기 투명도 설정 */
+            transition: opacity 0.1s ease-in-out; /* 부드러운 전환 추가 */
+            pointer-events: none; /* 클릭 방지 */
+        }
+
+        #custom-alert.visible {
+            opacity: 1; /* 표시될 때 불투명 */
+            pointer-events: all; /* 클릭 가능 */
+        }
+
+        .alert-box {
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.7);
+            background: white;
+            padding: 1.5rem;
+            text-align: center;
+            z-index: 10000;
+            color : #904242;
+        }
+
+        #confirm {
+            border-radius: 0.5rem;
+
+        }
+
+    </style>
+</head>
+<body>
+<link rel="stylesheet" href="/font.css"/>
+<div id="custom-alert">
+    <div class="alert-box">
+        <p>회원가입이 완료되었습니다!</p>
+        <div class="alert-buttons">
+            <button id="confirm">예</button>
+        </div>
+    </div>
+</div>
+
+</div>
+<div id="box">
+    <p id="hyoeun">가입 중!</p>
+    <!--method가 post면 @PostMapping-->
+    <a class="back" href="/"><< 돌아가기</a>
+
+    <div class="form-group" id="input">
+        <div class="input-label">
+            <label for="name">이름</label>
+            <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    placeholder="이름을 입력하세요." ;
+
+            />
+        </div>
+        <div id="nameError" class="error-message"></div>
+        <!--            <div id="name-json" class="json-output"></div>-->
+        <!--        <div id="nameError"></div>-->
+        <div class="input-label">
+            <label for="email">이메일</label>
+            <input
+                    type="text"
+                    id="email"
+                    name="email"
+                    placeholder="이메일을 입력하세요."
+            />
+        </div>
+
+        <div id="emailError" class="error-message"></div>
+        <div class="input-label">
+            <label for="password">비밀번호</label>
+            <input
+                    type="text"
+                    class="input"
+                    id="password"
+                    name="password"
+                    placeholder="비밀번호을 입력하세요."
+            />
+        </div>
+        <div id="passwordError" class="error-message"></div>
+        <div class="input-label">
+            <label for="passwordConfirm">비밀번호 확인</label>
+            <input
+                    style="font-family: normal,serif"
+                    type="password"
+                    id="passwordConfirm"
+                    placeholder="비밀번호을 입력하세요."
+            />
+        </div>
+        <div id="passwordConfirmError" class="error-message"></div>
+    </div>
+    <button id="register">등록하기🏮</button>
+</div>
+<script>
+
+
+    // 입력 필드에서 실시간 공백 제거
+    function preventSpaces(inputField) {
+        inputField.addEventListener("input", function () {
+            inputField.value = inputField.value.replace(/\s+/g, "");
+        });
+    }
+
+    preventSpaces(document.getElementById("name"));
+    preventSpaces(document.getElementById("email"));
+    preventSpaces(document.getElementById("password"));
+    preventSpaces(document.getElementById("passwordConfirm"));
+
+
+    // 서버로 데이터 전송 및 응답 처리 함수
+    async function sendInputData() {
+        const Data = {
+            "name": document.getElementById("name").value,
+            "password": document.getElementById("password").value,
+            "passwordConfirm": document.getElementById("passwordConfirm").value,
+            "email": document.getElementById("email").value
+        };
+
+        try {
+            const response = await fetch("http://localhost:8080/api/members/new", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(Data)
+            })
+
+            if (response.ok) {
+
+                await waitForConfirmation()
+
+
+
+            } else {
+                const result = await response.json();
+                document.getElementById("nameError").innerText = `${result.name || ""}`;
+                document.getElementById("emailError").innerText = `${result.email || ""}`;
+                document.getElementById("passwordError").innerText = `${result.password || ""}`;
+                document.getElementById("passwordConfirmError").innerText = `${result.passwordConfirm || ""}`;
+                console.log(result)
+            }
+        } catch (error) {
+            console.error("데이터 전송 중 오류 발생:", error);
+        }
+    }
+
+    async function waitForConfirmation() {
+        document.getElementById("custom-alert").classList.add("visible")
+        // Promise를 반환하여 버튼 클릭을 대기
+        return new Promise((resolve) => {
+            document.getElementById("confirm").addEventListener("click", () => {
+                resolve(); // 클릭되었을 때 Promise를 해결
+                window.location.href = "http://localhost:8080/"
+            }, {once: true}); // 한 번만 실행되도록 옵션 추가
+        });
+    }
+    document.getElementById("confirm").addEventListener("click", ()=> {
+        document.getElementById("custom-alert").classList.remove("visible")
+    })
+
+    document.getElementById("register").addEventListener("click", sendInputData)
+</script>
+
+</body>
+</html>
+

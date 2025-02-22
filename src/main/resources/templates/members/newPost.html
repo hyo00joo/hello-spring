@@ -1,0 +1,384 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" href="/font.css">
+</head>
+<style>
+
+    :root, html, body {
+
+        margin: 0;
+        padding: 0;
+    }
+
+    :root {
+        font-size: 160% !important;
+
+    }
+
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 3rem 0;
+
+    }
+
+    #box {
+        width: 8rem;
+        position: relative;
+        padding: 2.5rem 4rem;
+        border-radius: 0.875rem;
+        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+        border: 0.063rem solid #e03f3f96;
+        background-color: #f1d1f20f;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
+
+    }
+
+    .back {
+        height: 1rem;
+        width: 4.875rem;
+        position: absolute; /* 위치를 조정 */
+        left: 0%; /* `form`의 왼쪽 정렬 */
+        top: 0%; /* 수직 중앙 */
+        padding: 1rem;
+        margin: 0;
+        color: pink;
+        text-decoration: none;
+        text-align: left;
+        justify-content: left;
+        font-size: 0.813rem;
+        transition: color 0.5s, font-size 0.5s;
+    }
+
+    h2 {
+        color: #d97979;
+        margin-bottom: 2rem;
+
+    }
+
+    .back:hover {
+        color: #e45166;
+        font-size: 0.844rem;
+    }
+
+    #content {
+        height: 10rem;
+        text-align: left;
+    }
+
+    .input-label {
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+        align-items: start;
+    }
+
+    .input-label label {
+        font-size: 0.9rem;
+        color: #e66f80;
+        text-align: right;
+        padding-top: 0.5rem;
+    }
+
+    .input-label > textarea {
+        width: 9rem;
+        padding: 0.5rem;
+        border-radius: 0.25rem;
+        border: 0.063rem solid #c98383aa;
+        color: #da6f6f;
+        font-size: 0.63rem;
+    }
+
+    textarea::placeholder {
+        color: #ec8282b4;
+        font-size: 0.63rem;
+
+    }
+
+    .input-label textarea:hover {
+
+        border: 0.063rem solid #f82a49;
+    }
+
+    .input-label textarea:focus {
+        outline: none;
+        border: 0.063rem solid #f82a49;
+    }
+
+
+    .error-message {
+        display: block;
+        height: 0.6rem;
+        color: red;
+        font-size: 0.6rem;
+        text-align: right;
+
+    }
+
+    button .uploadButton {
+        font-size: 0.6rem;
+    }
+
+
+    button, .uploadButton {
+        background-color: #f82a498b;
+        text-align: center;
+        color: white;
+        border: none;
+        border-radius: 0.25rem;
+        padding: 0.5rem 1rem;
+        transition: background-color 0.3s;
+    }
+
+
+    button:hover, .uploadButton:hover {
+        background-color: #ca243e;
+    }
+
+    #button:disabled {
+        cursor: default;
+        background: #e0c2c7;
+    }
+
+    #custom-alert {
+        width: 100%;
+        height: 150%;
+        z-index: 9999;
+        display: flex;
+        position: fixed;
+        justify-content: center;
+        align-items: center;
+        background: rgba(0, 0, 0, 0.7);
+        opacity: 0;
+        transition: opacity 0.1s ease-in-out; /* 부드러운 전환 추가 */
+        pointer-events: none;
+
+    }
+
+    #custom-alert.visible {
+        opacity: 1;
+        pointer-events: all;
+    }
+
+    #alert-box {
+        padding: 1.5rem;
+        background-color: white;
+        border-radius: 1.2rem;
+        text-align: center;
+    }
+
+    .check-box {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .check-box label {
+        padding: 0;
+        font-size: 0.9rem;
+        color: #e66f80;
+    }
+
+    /* 기본 체크박스 스타일 숨기기 */
+    input[type="checkbox"] {
+        text-align: center;
+        appearance: none; /* 기본 스타일 제거 */
+        -webkit-appearance: none;
+        width: 1rem;
+        height: 1rem;
+        border: 0.1rem solid #e47d7d; /* 기본 테두리 색상 */
+        border-radius: 4px;
+        margin: 0;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    /* 체크박스가 눌렸을 때의 상태 */
+    input[type="checkbox"]:checked {
+        color: #1b0909;
+        border-color: #9c4350;
+    }
+
+    /* 체크박스에 마우스를 올렸을 때 */
+    input[type="checkbox"]:hover {
+        border-color: #70212d; /* 테두리 색상 */
+    }
+
+    /* 체크박스가 포커스를 받을 때 */
+    input[type="checkbox"]:focus {
+
+    }
+
+    input[type="checkbox"]:checked::after {
+        content: '✔';
+
+    }
+
+    #images {
+        display: none;
+    }
+
+
+    #image-container {
+        width: 100%; /* 셀의 너비를 100%로 설정 */
+        overflow-x: auto; /* 가로 스크롤 활성화 */
+        white-space: nowrap; /* 이미지를 한 줄로 표시하여 넘칠 때 스크롤 가능 */
+    }
+
+    #image-container img {
+        max-width: 100px; /* 이미지 크기 조정 */
+        margin-right: 10px; /* 이미지 간격 */
+    }
+
+    .image-box {
+        margin-bottom: 0.5rem;
+    }
+
+
+</style>
+<body>
+<div id="custom-alert">
+    <div id="alert-box">
+        <p>글작성을 완료했습니다.</p>
+        <div class="alert-buttons">
+            <button id="newPost">글 작성 계속하기</button>
+            <button id="posts">글 보러가기</button>
+        </div>
+    </div>
+
+</div>
+<div id="box">
+    <a class="back" href="/members/home"><< 돌아가기</a>
+    <h2>글쓰기</h2>
+    <div class="form-group">
+        <div class="check-box">
+            <label for="isPrivate">비공개</label>
+            <input id="isPrivate" name="isPrivate" type="checkbox">
+        </div>
+        <div class="input-label">
+            <label for="title">제목</label>
+            <textarea id="title" name="title" placeholder="제목을 입력해주세요."></textarea>
+
+        </div>
+        <div class="error-message" id="title-error"></div>
+        <div class="input-label">
+            <label for="content">내용</label>
+            <textarea id="content" name="content" placeholder="내용을 입력해주세요."></textarea>
+        </div>
+        <div class="error-message" id="content-error"></div>
+    </div>
+    <div class="image-box">
+        <table>
+            <tr>
+                <td id="image-container">
+                </td>
+            </tr>
+        </table>
+        <label for="images" class="uploadButton">
+            사진추가
+        </label>
+        <input type="file" id="images" onchange="displayFileNames()"/>
+    </div>
+
+    <button id="button">등록하기</button>
+</div>
+
+
+<script>
+    let formData = new FormData(); // FormData 객체 생성
+
+    function displayFileNames() {
+        const fileNamesContainer = document.getElementById('image-container');
+        const files = document.getElementById("images").files;
+
+        if (files.length > 0) {
+            for (let i = 0; i < files.length; ++i) {
+                formData.append("images", files[i])
+            }
+            const reader = new FileReader();
+
+            reader.readAsDataURL(files[0]);
+            // 파일이 로드된 후 실행될 함수
+            reader.onload = function (e) {
+                const imgElement = document.createElement('img');
+                imgElement.src = e.target.result; // base64로 변환된 이미지 데이터
+
+                // 이미지 요소를 fileNamesContainer에 추가
+                fileNamesContainer.appendChild(imgElement);
+            };
+
+            // 파일을 base64 형식으로 읽기
+
+
+        }
+    }
+
+    async function SendPost() {
+
+
+        // 텍스트 데이터 추가
+        formData.append("title", document.getElementById("title").value);
+        formData.append("content", document.getElementById("content").value);
+        formData.append("is_private", document.getElementById("isPrivate").checked);
+
+
+        try {
+            const response = await fetch("http://localhost:8080/api/members/newPost", {
+                method: "POST",
+                body: formData
+            })
+            if (response.ok) {
+                document.getElementById("custom-alert").classList.add("visible")
+                await waitForConfirmation();
+            }
+            if (response.status === 401) {
+                window.location.href = "http://localhost:8080"
+            } else {
+                const result = await response.json();
+                document.getElementById("title-error").innerText = `${result.title || ""}`
+                document.getElementById("content-error").innerText = `${result.content || ""}`
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async function waitForConfirmation() {
+        // Promise를 반환하여 버튼 클릭을 대기
+        return new Promise((resolve) => {
+            document.getElementById("newPost").addEventListener("click", () => {
+                resolve(); // 클릭되었을 때 Promise를 해결
+                window.location.href = "http://localhost:8080/members/newPost"
+            })
+            document.getElementById("posts").addEventListener("click", () => {
+                resolve();
+                window.location.href = "http://localhost:8080/members/searchMyPosts"
+            })
+
+
+        });
+    }
+
+
+    document.getElementById("button").addEventListener("click", SendPost);
+
+    document.getElementById("newPost").addEventListener("click", () => {
+        document.getElementById("custom-alert").classList.remove("visible")
+    })
+</script>
+</body>
+
+</html>

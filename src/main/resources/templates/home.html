@@ -1,17 +1,129 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
-<body>
+<head>
+    <link rel="stylesheet" href="/font.css">
+    <style>
 
-<div class = "container">
-    <div>
-        <h1>회원 가입</h1>
-        <p>회원 기능</p>
-        <p>
-            <a href="/members/new">회원 가입</a>
-            <a href="/members">회원 목록</a>
-            <a href="/members/delete">회원 탈퇴</a>
-        </p>
+        :root {
+            font-size: 190% !important;
+        }
+
+        html, body {
+            height: 100%;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .all {
+            align-content: center;
+        }
+
+        h1 {
+            color : #de7878;
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+
+        }
+
+        .container {
+            width: fit-content;
+            position: relative;
+            padding: 1rem 2rem;
+            border-radius: 0.875rem;
+            box-shadow: 0 0 0.63rem 0 rgba(0, 0, 0, 0.1);
+            border: 0.063rem solid #e03f3f96;
+            background-color: rgba(227, 197, 228, 0.06);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 0.7em;
+            align-content: center;
+
+        }
+
+        *{
+            text-align: center;
+            text-decoration-color: white;
+
+        }
+
+        .opt {
+            width: 6.3rem;
+            height: 1.875rem;
+            margin-bottom: 2.5rem ;
+            color: #e09797;
+            font-size: 1.563rem ;
+            text-decoration: none;
+            transition: font-size 0.5s, color 1s;
+
+        }
+        .box {
+            margin-bottom: 1.25rem;
+        }
+
+        .opt:hover {
+            color : #bf143d;
+            font-size: 1.75rem;
+        }
+        #old {
+            font-size: 0.6rem;
+            color: lightpink;
+            font-weight: bold;
+            display: block;
+            transition: all 0.1s;
+            opacity: 0;
+        }
+
+        #oldMember:hover > #old {
+            opacity: 1;
+            transition: all 0.5s;
+        }
+
+        #new {
+            font-size: 0.6rem;
+            color: lightpink;
+            font-weight: bold;
+            display: block;
+            transition: all 0.1s;
+            opacity: 0;
+        }
+
+        #newMember:hover > #new {
+            opacity: 1;
+            transition: all 0.5s;
+        }
+    </style>
+</head>
+<body>
+<div class="all">
+    <h1>로그인 해주세요.</h1>
+    <div class = "container">
+
+
+        <div >
+
+            <div class="box">
+                <a class = "opt" id="oldMember" href="/members/login">
+                    <span id="old">이미 회원이라면?</span>
+                    로그인</a>
+            </div>
+
+            <div class="box">
+                <a class = "opt" id="newMember" href="/members/new">
+                    <span id="new">아직 회원이 아니라면?</span>
+                    회원 가입</a>
+            </div>
+        </div>
     </div>
 </div>
+
 </body>
 </html>

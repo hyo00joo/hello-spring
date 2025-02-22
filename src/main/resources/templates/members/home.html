@@ -1,0 +1,168 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" href="/font.css">
+    <style>
+
+        :root {
+            font-size: 190% !important;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        h1, p {
+            color: #d97979;
+        }
+
+        .container {
+            width: fit-content;
+            position: relative;
+            padding: 1rem 2rem;
+            border-radius: 0.875rem;
+            box-shadow: 0 0 0.63rem 0 rgba(0, 0, 0, 0.1);
+            border: 0.063rem solid #e03f3f96;
+            background-color: rgba(227, 197, 228, 0.06);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            align-content: center;
+
+        }
+
+        * {
+            text-align: center;
+            text-decoration-color: white;
+
+        }
+
+        .box {
+            width: 6.3rem;
+            height: 1.875rem;
+
+            margin-bottom: 2.5rem;
+            color: #e09797;
+            font-size: 1.563rem;
+            text-decoration: none;
+            transition: font-size 0.5s, color 1s;
+
+        }
+
+        .opt {
+            margin-bottom: 1.25rem;
+        }
+
+        .box:hover {
+            color: #7d2727;
+            /*font-size: 1.75rem;*/
+        }
+
+        #custom-alert {
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            pointer-events: none;
+            position: fixed;
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #alert-box {
+            padding: 1.5rem;
+            background: white;
+            text-align: center;
+            border-radius: 1.2rem;
+        }
+
+        #custom-alert.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        button {
+            font-size: 0.6rem;
+        }
+
+        button {
+            background-color: #f82a498b;
+            color: white;
+            border: none;
+            border-radius: 0.25rem;
+            padding: 0.5rem 1rem;
+            transition: background-color 0.5s;
+        }
+
+        button:hover {
+            cursor: pointer;
+            background-color: #ca243e;
+        }
+
+
+
+    </style>
+</head>
+<body>
+<div id="custom-alert">
+    <div id="alert-box">
+        <p>로그아웃 되었습니다</p>
+        <button id="confirm">확인</button>
+    </div>
+
+</div>
+
+<div class="container">
+
+    <h1>회원 기능</h1>
+    <div id="opts">
+        <div class="opt">
+            <a class="box" href="/members/searchBoard">게시판</a>
+        </div>
+        <div class="opt">
+            <a class="box" href="/members/newPost">글쓰기</a>
+        </div>
+        <div class="opt">
+            <a class="box" href="/members/searchMyPosts">내 글
+                보기</a>
+        </div>
+        <div class="opt">
+            <a class="box" href="/members/myProfile">프로필 화면</a>
+        </div>
+        <div class="opt">
+            <a class="box" href="/members/update">회원 정보 수정</a>
+        </div>
+        <div class="opt">
+            <a id="logout" class="box">로그아웃</a>
+        </div>
+        <div class="opt">
+            <a class="box" href="/members/delete">회원 탈퇴</a>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    document.getElementById("logout").addEventListener("click", () => {
+        document.getElementById("custom-alert").classList.add("visible")
+        document.getElementById("confirm").addEventListener("click", () => {
+            window.location.href = "/members/logout"
+        })
+    })
+</script>
+</html>
