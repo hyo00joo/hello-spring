@@ -36,6 +36,7 @@
         justify-content: center;
         align-items: center;
         gap: 2rem;
+        width: 23rem;
     }
 
     .back {
@@ -185,6 +186,15 @@
         pointer-events: none;
         color : grey;
     }
+    .chat {
+        text-align: left;
+    }
+    #currentImage {
+        height: 2rem;
+        width: 2rem;
+        border-radius : 50%;
+        object-fit: cover
+    }
 
 </style>
 
@@ -199,40 +209,24 @@
         <input name="title" id="targetTitle" type="text" placeholder="검색하기" th:value="${targetTitle}">
         <button type="submit" id="find">검색</button>
     </form>
-    <table>
-        <thead>
-        <tr>
-            <th id="name">회원</th>
-            <th id="title">제목</th>
-            <th>작성 일자</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="entry: ${allPosts}" >
-            <td >
-                <a class="name"
+        <div class="chat" th:each="entry: ${allPosts}" >
+<!--            <img id="currentImage" th:src="${entry.post.author.profileImage == null} ? '' : ${entry.post.author.profileImage.imageFile}" alt="">-->
+                <span class="name"
                    th:href="${entry.post.author == null} ? '#' : @{/members/profile/{id}(id=${entry.post.author.id})}"
                    th:text="${entry.post.author == null} ? '탈퇴한 회원' : ${entry.post.author.name}"
                    th:classappend="${entry.post.author == null} ? 'disabled' : ''">
-                </a>
+                </span>
 
-            </td>
-            <td>
-                <a class="title" th:href="@{/members/board/postContent/{id}(id=${entry.post.postId})}"
-                   th:text="${entry.post.title}">
-                </a>
-            </td>
-            <td class="date" th:text="${entry.formattedDate}"></td>
-        </tr>
-        </tbody>
-    </table>
-<div>
-    <a class="page" th:if="${currentPage} > 0" th:with="currentPage = ${currentPage - 1}"
-       th:href="@{/members/searchBoard(title = ${targetTitle}, currentPage = ${currentPage})}" >이전</a>
-    <span id="num" th:text="${currentPage + 1} + '/' + ${totalPages}"></span>
-    <a class="page" th:if="${currentPage + 1 < totalPages}" th:with="currentPage=${currentPage + 1}"
-       th:href="@{/members/searchBoard(title = ${targetTitle}, currentPage = ${currentPage})}">다음</a>
-</div>
+                <span class="title" th:text="${entry.post.content}"></span>
+            <span class="date" th:text="${entry.formattedDate}"></span>
+        </div>
+    <div>
+        <a class="page" th:if="${currentPage} > 0" th:with="currentPage = ${currentPage - 1}"
+           th:href="@{/members/searchBoard(title = ${targetTitle}, currentPage = ${currentPage})}" >이전</a>
+        <span id="num" th:text="${currentPage + 1} + '/' + ${totalPages}"></span>
+        <a class="page" th:if="${currentPage + 1 < totalPages}" th:with="currentPage=${currentPage + 1}"
+           th:href="@{/members/searchBoard(title = ${targetTitle}, currentPage = ${currentPage})}">다음</a>
+    </div>
 </div>
 </body>
 </html>

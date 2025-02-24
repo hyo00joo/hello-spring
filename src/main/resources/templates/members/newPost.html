@@ -25,7 +25,7 @@
     }
 
     #box {
-        width: 8rem;
+        width: 12rem;
         position: relative;
         padding: 2.5rem 4rem;
         border-radius: 0.875rem;
@@ -233,17 +233,31 @@
 
     #image-container {
         width: 100%; /* 셀의 너비를 100%로 설정 */
-        overflow-x: auto; /* 가로 스크롤 활성화 */
+        overflow-x: scroll; /* 가로 스크롤 활성화 */
         white-space: nowrap; /* 이미지를 한 줄로 표시하여 넘칠 때 스크롤 가능 */
+        position: relative;
+
     }
 
     #image-container img {
-        max-width: 100px; /* 이미지 크기 조정 */
-        margin-right: 10px; /* 이미지 간격 */
+        width: 4rem;
+        height: 4rem;
     }
 
-    .image-box {
-        margin-bottom: 0.5rem;
+
+
+    #image-container button {
+        display: flex;
+        position: absolute;
+        top: 0rem;
+        left: 0rem;
+        width: 0.7rem;
+        height: 0.7rem;
+        border-radius: 50%;
+        align-items: center;
+        justify-content: center;
+        padding: 2px 5px;
+
     }
 
 
@@ -279,51 +293,68 @@
         </div>
         <div class="error-message" id="content-error"></div>
     </div>
-    <div class="image-box">
-        <table>
-            <tr>
-                <td id="image-container">
-                </td>
-            </tr>
-        </table>
-        <label for="images" class="uploadButton">
-            사진추가
-        </label>
-        <input type="file" id="images" onchange="displayFileNames()"/>
-    </div>
+    <div id="image-container"></div>
+    <label for="images" class="uploadButton">
+        사진추가
+    </label>
+    <input type="file" id="images" multiple/>
 
-    <button id="button">등록하기</button>
+    <button id="register">등록하기</button>
 </div>
 
 
 <script>
     let formData = new FormData(); // FormData 객체 생성
 
-    function displayFileNames() {
-        const fileNamesContainer = document.getElementById('image-container');
-        const files = document.getElementById("images").files;
+    const selectedFiles = []; // 선택된 파일을 저장하는 배열
 
-        if (files.length > 0) {
-            for (let i = 0; i < files.length; ++i) {
-                formData.append("images", files[i])
-            }
-            const reader = new FileReader();
+    document.getElementById("images").addEventListener("change", function (event) {
+        const files = Array.from(event.target.files);
 
-            reader.readAsDataURL(files[0]);
-            // 파일이 로드된 후 실행될 함수
-            reader.onload = function (e) {
-                const imgElement = document.createElement('img');
-                imgElement.src = e.target.result; // base64로 변환된 이미지 데이터
+        files.forEach((file) => {
+            selectedFiles.push(file); // 파일 배열에 추가
+            console.log(file)
+            displayImage(file);
+        });
+        event.target.value = ""; // 동일한 파일 다시 선택 가능하도록 초기화
+    });
 
-                // 이미지 요소를 fileNamesContainer에 추가
-                fileNamesContainer.appendChild(imgElement);
-            };
+    function displayImage(file) {
+        // const file = document.getElementById("images").files;
 
-            // 파일을 base64 형식으로 읽기
+        const imageContainer = document.getElementById("image-container");
 
+        const div = document.createElement("div");
+        div.style.display = "inline-block";
+        div.style.position = "relative";
+        div.style.margin = "5px";
 
-        }
+        const img = document.createElement("img");
+        img.src = URL.createObjectURL(file);
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.innerText = "x";
+
+        div.appendChild(img);
+        div.appendChild(deleteBtn);
+        imageContainer.appendChild(div);
+        console.log("displayImage: " + img.src)
+        deleteBtn.addEventListener("click", function () {
+            removeImage(file, div)
+        });
     }
+
+    function removeImage(file, div) {
+        const index = selectedFiles.indexOf(file);
+        console.log(file)
+        console.log(index)
+        if (index !== -1) {
+            selectedFiles.splice(index, 1); // 배열에서 제거
+        }
+        div.remove(); // 화면에서 삭제
+        console.log(selectedFiles)
+    }
+
 
     async function SendPost() {
 
@@ -332,6 +363,17 @@
         formData.append("title", document.getElementById("title").value);
         formData.append("content", document.getElementById("content").value);
         formData.append("is_private", document.getElementById("isPrivate").checked);
+        selectedFiles.forEach((file, index) => {
+            formData.append("images", file);
+        });
+        console.log(formData)
+        // const files = document.getElementById("images").files;
+        //
+        // if (files.length > 0) {
+        //     for (let i = 0; i < files.length; ++i) {
+        //         formData.append("images", files[i])
+        //     }
+        // }
 
 
         try {
@@ -373,7 +415,7 @@
     }
 
 
-    document.getElementById("button").addEventListener("click", SendPost);
+    document.getElementById("register").addEventListener("click", SendPost);
 
     document.getElementById("newPost").addEventListener("click", () => {
         document.getElementById("custom-alert").classList.remove("visible")

@@ -71,7 +71,7 @@
         height: 4rem;
         width: 4rem;
         border-radius : 50%;
-        /*object-fit: cover*/
+        object-fit: cover
 
     }
 
@@ -122,6 +122,7 @@
         background: white;
         text-align: center;
         border-radius: 1.2rem;
+        position: relative;
     }
 
     #save {
@@ -151,7 +152,26 @@
     #editImage.invisible {
         display: none;
     }
+    .disabled {
+        pointer-events: none;
+        background-color: gray;
+    }
 
+    #close {
+        display: flex;
+        position: absolute;
+        top : 0.5rem;
+        left: 0.5rem;
+        width: 0.7rem;
+        height:0.7rem;
+        border-radius: 50%;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #close > span {
+        margin-top: -0.15rem;
+    }
 
 </style>
 <body>
@@ -160,10 +180,16 @@
         <p>프로필 사진 변경중...</p>
     </div>
 </div>
+<div id="delete-alert" class="custom-alert">
+    <div class="alert-box">
+        <p>프로필 사진 삭제중...</p>
+    </div>
+</div>
 <div id="edit-alert" class="custom-alert">
     <div class="alert-box">
+            <button id="close"><span>x</span></button>
        <span>
-           <button id="delete" th:if="${delete}">삭제하기</button>
+           <button id="delete" th:classappend="${delete} ? '' : 'disabled' ">삭제하기</button>
            <label for="profileImage" class="uploadButton">프로필 사진 변경</label>
            <input type="file" name="profileImage" id="profileImage" onchange="displayImage()"/>
        </span>
@@ -246,22 +272,42 @@
         document.getElementById("save-alert").classList.remove("visible")
     }
 
+    async function deleteProfileImage() {
+        document.getElementById("edit-alert").classList.remove("visible")
+        document.getElementById("delete-alert").classList.add("visible")
+
+        const response = await  fetch("http://localhost:8080/api/s3/delete", {
+            method : "POST"
+        })
+
+        if(response.ok) {
+            window.location.href = "http://localhost:8080/members/myProfile"
+
+        }else {
+
+            window.location.href = "http://localhost:8080/members/home"
+        }
+
+        document.getElementById("delete-alert").classList.remove("visible")
+    }
+
+    document.getElementById("close").addEventListener("click", ()=> {
+        document.getElementById("edit-alert").classList.remove("visible")
+    })
+
     document.getElementById("editImage").addEventListener("click", ()=> {
         document.getElementById("edit-alert").classList.add("visible")
     })
 
+    document.getElementById("delete").addEventListener("click", ()=> {
+        deleteProfileImage()
+    })
 
     document.getElementById("save").addEventListener("click", () => {
-
-
-
-            saveProfileImage()
+        saveProfileImage()
 
     })
 
-    // document.getElementById("confirm").addEventListener("click", () => {
-    //     document.getElementById("confirm").classList.remove("visible")
-    // })
 
 </script>
 

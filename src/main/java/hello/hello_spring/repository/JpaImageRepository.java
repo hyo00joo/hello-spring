@@ -33,9 +33,12 @@ public class JpaImageRepository  {
         em.persist(profileImage);
     }
 
-    public void deleteProfileIMage(ProfileImage profileImage) {
-        em.remove(profileImage);
+    public void deleteProfileImageById(Long profileImageId) {
+        em.createQuery("UPDATE ProfileImage p SET p.imageFile = null WHERE p.member.id = :profileImageId")
+                .setParameter("profileImageId", profileImageId)
+                .executeUpdate();
     }
+
 
     public ProfileImage findProfileImageByUserId(Long userId) {
         return em.createQuery("select im from ProfileImage im where im.member.id = :userId", ProfileImage.class)

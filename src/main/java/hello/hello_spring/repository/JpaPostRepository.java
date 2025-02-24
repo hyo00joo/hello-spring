@@ -45,7 +45,7 @@ public class JpaPostRepository implements PostRepository {
         query.setParameter("memberId", userId);
 
         if (hasTitle) {
-            query.setParameter("title", "%" + title.trim() + "%");
+            query.setParameter("title", "%" + title.trim() + "%"); // % : 부분검색
         }
 
         query.setFirstResult((int) pageable.getOffset()); // OFFSET 적용
@@ -85,9 +85,9 @@ public class JpaPostRepository implements PostRepository {
     public Page<Post> findAllMembersPosts(Pageable pageable, String title) {
         boolean hasTitle = (title != null && !title.trim().isEmpty());
 
-        String queryString = "SELECT p FROM Post p";
+        String queryString = "SELECT p FROM Post p Where p.is_private = false ";
         if (hasTitle) {
-            queryString += " WHERE p.title like :title";
+            queryString += " AND WHERE p.title like :title";
         }
         queryString += " ORDER BY p.createdAt DESC";
         TypedQuery<Post> query = em.createQuery(queryString, Post.class);

@@ -98,14 +98,6 @@ public class searchController {
 
         allPosts.forEach(post -> {
             Map<String, Object> postWithDate = new HashMap<>();
-            if(post.getAuthor() == null) {
-
-                    Member deletedMember = new Member();
-                    deletedMember.setName("알수 없음");
-                    memberRepository.save(deletedMember);
-
-                post.setAuthor(deletedMember);
-            }
             postWithDate.put("post", post);
             postWithDate.put("formattedDate", post.getCreatedAt().format(formatter));
             postsWithDates.add(postWithDate);
@@ -116,6 +108,36 @@ public class searchController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", allPosts.getTotalPages());
         return "/members/board"; // 검색 결과 페이지로 이동
+    }
+    @GetMapping("/searchChatting")
+    public String ChattingFindByTitle(
+            @RequestParam(value = "title", required = false) String title,
+            @RequestParam(value = "currentPage", defaultValue = "0") Integer page,
+            HttpServletRequest request, Model model) {
+        String token = CookieUtil.getTokenFromCookie(request);
+
+        if (token == null) {
+            return "redirect:/"; // 세션이 없으면 로그인 페이지로 리다이렉트
+        }
+        Pageable pageable = PageRequest.of(page, 5);
+        Page<Post> allPosts = postService.findAllMembersPosts(pageable, title);
+
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 E요일");
+        List<Map<String, Object>> postsWithDates = new ArrayList<>();
+
+        allPosts.forEach(post -> {
+            Map<String, Object> postWithDate = new HashMap<>();
+            postWithDate.put("post", post);
+            postWithDate.put("formattedDate", post.getCreatedAt().format(formatter));
+            postsWithDates.add(postWithDate);
+        });
+
+        model.addAttribute("targetTitle", title);
+        model.addAttribute("allPosts", postsWithDates);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", allPosts.getTotalPages());
+        return "/members/chatting"; // 검색 결과 페이지로 이동
     }
 
 }

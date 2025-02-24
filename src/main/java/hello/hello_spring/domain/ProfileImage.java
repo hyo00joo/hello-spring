@@ -17,7 +17,7 @@ public class ProfileImage {
 
 
     @Lob  // 큰 바이너리 데이터를 저장할 때 사용
-    @Column(nullable = true, columnDefinition = "LONGTEXT")
+    @Column(name = "image_file", nullable = true, columnDefinition = "LONGTEXT")
     private String imageFile;
 
 //    public Long getId() {
